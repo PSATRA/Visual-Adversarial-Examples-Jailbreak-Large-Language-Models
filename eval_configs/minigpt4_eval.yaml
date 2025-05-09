@@ -8,7 +8,7 @@ model:
   low_resource: True
   prompt_path: ""
   prompt_template: '###Human: {} ###Assistant: '
-  ckpt: '/home/zhangwei_srt/ssd3/lige/weights/pretrained_minigpt4.pth'
+  ckpt: '/gpfs-flash/hulab/zhangwei_srt/lige/weights/pretrained_minigpt4.pth'
 
 
 datasets:

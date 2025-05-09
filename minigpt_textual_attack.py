@@ -120,4 +120,4 @@ text_prompt_template = prompt_wrapper.minigpt4_chatbot_prompt_text_attack
 offset = prompt_wrapper.minigpt4_chatbot_prompt_offset
 
 adv_prompt = my_attacker.attack(text_prompt_template=text_prompt_template, offset=offset,
-                                    num_iter=args.n_iters, batch_size=8)
+                                    num_iter=args.n_iters, batch_size=4)

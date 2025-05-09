@@ -24,7 +24,7 @@ from minigpt4.models.Qformer import BertConfig, BertLMHeadModel
 from minigpt4.models.eva_vit import create_eva_vit_g
 from transformers import BertTokenizer
 
-bert_token_path = "/home/zhangwei_srt/ssd3/lige/tokenizers/bert-base-uncased"
+bert_token_path = "/gpfs-flash/hulab/zhangwei_srt/lige/tokenizers/bert-base-uncased"
 
 class Blip2Base(BaseModel):
     @classmethod

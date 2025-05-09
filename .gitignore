@@ -1,4 +1,8 @@
 .idea
 *.DS_Store
-__pycaches__/
+__pycache__/
 visual_unconstrained/
+textual_unconstrained/
+visual_constrained_eps_16/
+visual_constrained_eps_32/
+visual_constrained_eps_64/

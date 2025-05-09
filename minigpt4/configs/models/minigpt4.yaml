@@ -13,7 +13,7 @@ model:
   num_query_token: 32
 
   # Vicuna
-  llama_model: "/home/zhangwei_srt/ssd3/lige/weights/vicuna-13b-v1.5"
+  llama_model: "/gpfs-flash/hulab/zhangwei_srt/lige/weights/vicuna-13b-v1.5"
 
   # generation configs
   prompt: ""
