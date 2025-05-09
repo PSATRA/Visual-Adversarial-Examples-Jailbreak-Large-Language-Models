@@ -111,7 +111,7 @@ if not args.constrained:
 
 
     adv_img_prompt = my_attacker.attack_unconstrained(text_prompt_template,
-                                                            img=img, batch_size = 4,
+                                                            img=img, batch_size=4,
                                                             num_iter=5000, alpha=args.alpha/255)
 
 else:
