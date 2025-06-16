@@ -102,7 +102,7 @@ file.close()
 prompts_eval = []
 num = len(data)
 for i in range(num):
-    prompts_eval.append(data[i][0])
+    prompts_eval.append(data[0][0]) #TODO
 
 img = Image.open(args.image_path).convert('RGB')
 img = vis_processor(img).unsqueeze(0).to(model.device)

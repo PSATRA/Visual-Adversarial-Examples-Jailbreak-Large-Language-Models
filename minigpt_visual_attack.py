@@ -14,7 +14,7 @@ import torch
 import torch.backends.cudnn as cudnn
 from PIL import Image
 from torchvision.utils import save_image
-from minigpt_utils import visual_attacker, prompt_wrapper
+from minigpt_utils import visual_attacker, visual_attacker_APGD, prompt_wrapper
 
 from minigpt4.common.config import Config
 from minigpt4.common.dist_utils import get_rank
@@ -87,37 +87,49 @@ if not os.path.exists(args.save_dir):
 
 import csv
 
-file = open("harmful_corpus/derogatory_corpus.csv", "r")
+#target_corpus = "harmful_corpus/derogatory_corpus.csv"
+target_corpus = "harmful_corpus/sexism.csv" #TODO
+
+file = open(target_corpus, "r")
 data = list(csv.reader(file, delimiter=","))
 file.close()
 targets = []
 num = len(data)
 for i in range(num):
     targets.append(data[i][0])
+print(targets)
 
 
-my_attacker = visual_attacker.Attacker(args, model, targets, device=model.device, is_rtp=False)
+my_attacker = visual_attacker_APGD.Attacker(args, model, targets, device=model.device, is_rtp=False)
 
 template_img = 'adversarial_images/clean.jpeg'
 img = Image.open(template_img).convert('RGB')
 img = vis_processor(img).unsqueeze(0).to(model.device)
 
 
-text_prompt_template = prompt_wrapper.minigpt4_chatbot_prompt_no_text_input
+file = open("harmful_corpus/manual_harmful_instructions.csv", "r")
+data = list(csv.reader(file, delimiter=","))
+file.close()
+prompts_train = []
+num = len(data)
+for i in range(num):
+    prompts_train.append(data[0][0])    #TODO
+#print("######################")
+#print(f"prompt_num: {len(prompts_train)}")
+#print(prompts_train)
+#print("######################")
 
 
 
 if not args.constrained:
-
-
-    adv_img_prompt = my_attacker.attack_unconstrained(text_prompt_template,
+    adv_img_prompt = my_attacker.attack_unconstrained(prompts_train,
                                                             img=img, batch_size=4,
-                                                            num_iter=5000, alpha=args.alpha/255)
+                                                            num_iter=args.n_iters, alpha_init=args.alpha/255)
 
 else:
-    adv_img_prompt = my_attacker.attack_constrained(text_prompt_template,
+    adv_img_prompt = my_attacker.attack_constrained(prompts_train,
                                                             img=img, batch_size=4,
-                                                            num_iter=5000, alpha=args.alpha/255,
+                                                            num_iter=args.n_iters, alpha_init=args.alpha/255,
                                                             epsilon=args.eps/255)
 
 save_image(adv_img_prompt, '%s/bad_prompt.bmp' % args.save_dir)

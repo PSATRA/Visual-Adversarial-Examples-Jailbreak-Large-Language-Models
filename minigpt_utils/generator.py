@@ -9,6 +9,7 @@ class StoppingCriteriaSub(StoppingCriteria):
 
     def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor):
         for stop in self.stops:
+            stop = stop.to(input_ids.device)
             if torch.all((stop == input_ids[0][-len(stop):])).item():
                 return True
 
@@ -42,7 +43,7 @@ class Generator:
             max_new_tokens=self.max_new_tokens,
             stopping_criteria=self.stopping_criteria,
             num_beams=self.num_beams,
-            do_sample=True,
+            do_sample=True,    #TODO
             min_length=self.min_length,
             top_p=self.top_p,
             repetition_penalty=self.repetition_penalty,

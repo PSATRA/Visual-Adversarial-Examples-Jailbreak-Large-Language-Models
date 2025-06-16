@@ -11,15 +11,15 @@ import seaborn as sns
 
 
 def normalize(images):
-    mean = torch.tensor([0.48145466, 0.4578275, 0.40821073]).cuda()
-    std = torch.tensor([0.26862954, 0.26130258, 0.27577711]).cuda()
+    mean = torch.tensor([0.48145466, 0.4578275, 0.40821073], device=images.device)
+    std = torch.tensor([0.26862954, 0.26130258, 0.27577711], device=images.device)
     images = images - mean[None, :, None, None]
     images = images / std[None, :, None, None]
     return images
 
 def denormalize(images):
-    mean = torch.tensor([0.48145466, 0.4578275, 0.40821073]).cuda()
-    std = torch.tensor([0.26862954, 0.26130258, 0.27577711]).cuda()
+    mean = torch.tensor([0.48145466, 0.4578275, 0.40821073], device=images.device)
+    std = torch.tensor([0.26862954, 0.26130258, 0.27577711], device=images.device)
     images = images * std[None, :, None, None]
     images = images + mean[None, :, None, None]
     return images
@@ -43,7 +43,7 @@ class Attacker:
         self.model.eval()
         self.model.requires_grad_(False)
 
-    def attack_unconstrained(self, text_prompt, img, batch_size = 8, num_iter=2000, alpha=1/255):
+    def attack_unconstrained(self, prompts_train, img, batch_size = 8, num_iter=2000, alpha=1/255):
 
         print('>>> batch_size:', batch_size)
 
@@ -56,6 +56,9 @@ class Attacker:
         for t in tqdm(range(num_iter + 1)):
 
             batch_targets = random.sample(self.targets, batch_size)
+            
+            text_prompt_template = prompt_wrapper.minigpt4_chatbot_prompt
+            text_prompt = text_prompt_template % prompts_train[num_iter%40]
             text_prompts = [text_prompt] * batch_size
 
 
@@ -97,7 +100,7 @@ class Attacker:
 
         return adv_img_prompt
 
-    def attack_constrained(self, text_prompt, img, batch_size = 8, num_iter=2000, alpha=1/255, epsilon = 128/255 ):
+    def attack_constrained(self, prompts_train, img, batch_size = 8, num_iter=2000, alpha=1/255, epsilon = 128/255 ):
 
         print('>>> batch_size:', batch_size)
 
@@ -116,6 +119,8 @@ class Attacker:
 
             batch_targets = random.sample(self.targets, batch_size)
 
+            text_prompt_template = prompt_wrapper.minigpt4_chatbot_prompt
+            text_prompt = text_prompt_template % prompts_train[num_iter%40]
             text_prompts = [text_prompt] * batch_size
 
             x_adv = x + adv_noise
